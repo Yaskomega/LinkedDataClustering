@@ -13,7 +13,7 @@ library(FactoMineR)
 
 
 # ********************************************************
-# BUILDING THE DATA FRAME TO BE USED IN ACP
+# BUILDING THE LIST OF LINK AND THE COLUMNS NAMES AND ROWS NAMES
 # ********************************************************
 
 T5<-Sys.time()
