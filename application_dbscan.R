@@ -18,6 +18,9 @@ library(dynamicTreeCut)
 # BUILDING THE LIST OF LINK AND THE COLUMNS NAMES AND ROWS NAMES
 # ********************************************************
 
+# <time>
+time_B_obj_preparing <- Sys.time()
+
 col <- list() # list of all links possibles
 #row <- c()
 col_to_string <- c()
@@ -50,6 +53,9 @@ for (j in 1:length(list_of_subjects)){
   }
 }
 
+# <time>
+time_E_obj_preparing <- Sys.time()
+
 
 
 
@@ -62,6 +68,17 @@ for (j in 1:length(list_of_subjects)){
 #
 # ***************************************************************************************************************
 # ***************************************************************************************************************
+
+
+
+
+
+# <time>
+time_B_matrix_creation <- Sys.time()
+
+
+
+
 
 
 # ********************************************************
@@ -98,13 +115,44 @@ for (j in 1:length(list_of_subjects)){
 
 
 
+# <time>
+time_E_matrix_creation <- Sys.time()
+
+
+
+
+
 
 # ********************************************************
 # USING DBSCAN
 # ********************************************************
 library(dbscan)
+
+# <time>
+time_B_dbscan <- Sys.time()
+
 res <- dbscan(data, eps = .4, minPts = 2)
-res
+#res
+
+# <time>
+time_E_dbscan <- Sys.time()
 
 
+# ********************************************************
+# CALCULATING TIME
+# ********************************************************
+time_obj_preparing <- time_E_obj_preparing - time_B_obj_preparing
+time_matrix_creation <- time_E_matrix_creation - time_B_matrix_creation
+time_dbscan <- time_E_dbscan - time_B_dbscan
 
+require(grDevices)
+
+# Create Data
+Prop=c(as.numeric(time_query_exec) , as.numeric(time_result_obj_creation) , as.numeric(time_link_obj_creation),
+       as.numeric(time_obj_preparing),as.numeric(time_matrix_creation),
+       as.numeric(time_dbscan))
+
+# You can also custom the labels:
+pie(Prop , labels = c("Query execution","Creation of results objects","Creation of link objects",
+                      "Preparing time of objects" , "Creation of the matrix",
+                      "dbscan execution"))

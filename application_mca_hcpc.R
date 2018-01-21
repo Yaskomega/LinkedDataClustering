@@ -16,7 +16,9 @@ library(FactoMineR)
 # BUILDING THE LIST OF LINK AND THE COLUMNS NAMES AND ROWS NAMES
 # ********************************************************
 
-T5<-Sys.time()
+# <time>
+time_B_obj_preparing <- Sys.time()
+
 col <- list()
 #row <- c()
 col_to_string <- c()
@@ -52,6 +54,11 @@ for (j in 1:length(list_of_subjects)){
   }
 }
 
+# <time>
+time_E_obj_preparing <- Sys.time()
+
+
+
 # ***************************************************************************************************************
 # ***************************************************************************************************************
 #
@@ -62,13 +69,24 @@ for (j in 1:length(list_of_subjects)){
 # ***************************************************************************************************************
 # ***************************************************************************************************************
 
+
+
+
+
+# <time>
+time_B_matrix_creation <- Sys.time()
+
+
+
+
+
 # ********************************************************
 # CREATING THE EMPTY MATRIX
 # ********************************************************
 data <- matrix(NA, length(list_of_subjects), number_of_columns)
 colnames(data) <- col_to_string
 rownames(data) <-  row_to_string
-T6<-Sys.time()
+
 
 
 
@@ -77,7 +95,7 @@ T6<-Sys.time()
 # PREPARING MATRIX FOR MCA & HCPC
 # ********************************************************
 # Fillin the matrix : 
-T7<-Sys.time()
+
 for (j in 1:length(list_of_subjects)){
   # selecting the current subject :
   subject <- list_of_subjects[[j]] 
@@ -95,10 +113,14 @@ for (j in 1:length(list_of_subjects)){
     }
   }
 }
-T8<-Sys.time()
 
-TT <- (T2-T1) + (T4-T3) + (T6-T5) + (T8-T7)
-print(TT)
+
+
+
+
+# <time>
+time_E_matrix_creation <- Sys.time()
+
 
 
 
@@ -106,10 +128,21 @@ print(TT)
 # ********************************************************
 # MCA & HCPC
 # ********************************************************
+# <time>
+time_B_MCA <- Sys.time()
 
 res.mca = MCA(data, quanti.sup = NULL, quali.sup = NULL, graph = FALSE)
 
-res.hcpc = HCPC(res.mca, graph = TRUE)
+# <time>
+time_E_MCA <- Sys.time()
+
+# <time>
+time_B_HCPC <- Sys.time()
+
+res.hcpc = HCPC(res.mca, graph = FALSE)
+
+# <time>
+time_E_HCPC <- Sys.time()
 
 
 
@@ -126,3 +159,23 @@ res.hcpc = HCPC(res.mca, graph = TRUE)
 
 
 
+
+# ********************************************************
+# CALCULATING TIME
+# ********************************************************
+time_obj_preparing <- time_E_obj_preparing - time_B_obj_preparing
+time_matrix_creation <- time_E_matrix_creation - time_B_matrix_creation
+time_MCA <- time_E_MCA - time_B_MCA
+time_HCPC <- time_E_HCPC - time_B_HCPC
+
+require(grDevices)
+
+# Create Data
+Prop=c(as.numeric(time_query_exec) , as.numeric(time_result_obj_creation) , as.numeric(time_link_obj_creation),
+       as.numeric(time_obj_preparing),as.numeric(time_matrix_creation),
+       as.numeric(time_MCA),as.numeric(time_HCPC))
+
+# You can also custom the labels:
+pie(Prop , labels = c("Query execution","Creation of results objects","Creation of link objects",
+                      "Preparing time of objects" , "Creation of the matrix",
+                      "MCA execution" , "HCPC execution"))
