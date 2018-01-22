@@ -9,6 +9,9 @@ source("classes.R")
 # installation de la librairie  SPARQL : install.packages("SPARQL")
 library(SPARQL)
 
+# installation de la librairie  SPARQL : install.packages("lubridate")
+library(lubridate)
+
 
 
 
@@ -35,7 +38,17 @@ WHERE {
 ?oeuvre rdf:type  dbo:Book.
 } LIMIT 10"
 
+query <- "select distinct ?g
+where {
+?g rdfs:label ?y
+FILTER(regex(?y, 'Titanic', 'i'))
+} LIMIT 30"
 
+query <- "select distinct ?g
+where {
+?g rdfs:label ?y
+FILTER(regex(?y, 'Jaguar', 'i'))
+} LIMIT 500"
 
 
 # ********************************************************
@@ -134,9 +147,9 @@ time_E_link_obj_creation <- Sys.time()
 # ********************************************************
 # CALCULATING TIME
 # ********************************************************
-time_query_exec <- time_E_query_exec - time_B_query_exec
-time_result_obj_creation <- time_E_result_obj_creation - time_B_result_obj_creation
-time_link_obj_creation <- time_E_link_obj_creation - time_B_link_obj_creation
+time_query_exec <- time_length(interval(start = time_B_query_exec, end = time_E_query_exec), unit = "seconds") 
+time_result_obj_creation <- time_length(interval(start = time_B_result_obj_creation, end = time_E_result_obj_creation), unit = "seconds") 
+time_link_obj_creation <- time_length(interval(start = time_B_link_obj_creation, end = time_E_link_obj_creation), unit = "seconds")
 
 require(grDevices)
 

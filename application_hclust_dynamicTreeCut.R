@@ -172,7 +172,8 @@ minClusterSize = number_of_results / maximum_number_of_cluster
 clusters <- NULL
 #clusters = cutreeDynamic(dendogram, cutHeight = NULL, minClusterSize = 20,distM = as.matrix(dist_matrix), pamStage = FALSE)
 #clusters = cutreeDynamic(dendogram, distM = as.matrix(dist_matrix))
-clusters = cutreeDynamic(dendogram, minClusterSize=minClusterSize, method="hybrid",  distM = as.matrix(dist_matrix))
+#clusters = cutreeDynamic(dendogram, minClusterSize=minClusterSize, method="hybrid",  distM = as.matrix(dist_matrix))
+clusters = cutreeDynamic(dendogram, minClusterSize= 1,deepSplit = 4, minGap = 0.05, method="hybrid",  distM = as.matrix(dist_matrix))
 #plot(clusters)
 
 # <time>
@@ -184,10 +185,14 @@ time_E_dynamic_cut <- Sys.time()
 # ********************************************************
 # CALCULATING TIME
 # ********************************************************
-time_obj_preparing <- time_E_obj_preparing - time_B_obj_preparing
-time_matrix_creation <- time_E_matrix_creation - time_B_matrix_creation
-time_hclust <- time_E_hclust - time_B_hclust
-time_dynamic_cut <- time_E_dynamic_cut - time_B_dynamic_cut
+time_obj_preparing <- time_length(interval(start = time_B_obj_preparing, end = time_E_obj_preparing), unit = "seconds") 
+
+time_matrix_creation <- time_length(interval(start = time_B_matrix_creation, end = time_E_matrix_creation), unit = "seconds") 
+
+time_hclust <- time_length(interval(start = time_B_hclust, end = time_E_hclust), unit = "seconds") 
+
+time_dynamic_cut <- time_length(interval(start = time_B_dynamic_cut, end = time_E_dynamic_cut), unit = "seconds") 
+
 
 require(grDevices)
 

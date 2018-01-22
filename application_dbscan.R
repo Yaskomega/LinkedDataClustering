@@ -141,9 +141,12 @@ time_E_dbscan <- Sys.time()
 # ********************************************************
 # CALCULATING TIME
 # ********************************************************
-time_obj_preparing <- time_E_obj_preparing - time_B_obj_preparing
-time_matrix_creation <- time_E_matrix_creation - time_B_matrix_creation
-time_dbscan <- time_E_dbscan - time_B_dbscan
+time_obj_preparing <- time_length(interval(start = time_B_obj_preparing, end = time_E_obj_preparing), unit = "seconds") 
+
+time_matrix_creation <- time_length(interval(start = time_B_matrix_creation, end = time_E_matrix_creation), unit = "seconds") 
+
+time_dbscan <- time_length(interval(start = time_B_dbscan, end = time_E_dbscan), unit = "seconds") 
+
 
 require(grDevices)
 

@@ -146,10 +146,13 @@ time_E_HCPC <- Sys.time()
 # ********************************************************
 # CALCULATING TIME
 # ********************************************************
-time_obj_preparing <- time_E_obj_preparing - time_B_obj_preparing
-time_matrix_creation <- time_E_matrix_creation - time_B_matrix_creation
-time_CA <- time_E_CA - time_B_CA
-time_HCPC <- time_E_HCPC - time_B_HCPC
+time_obj_preparing <- time_length(interval(start = time_B_obj_preparing, end = time_E_obj_preparing), unit = "seconds") 
+
+time_matrix_creation <- time_length(interval(start = time_B_matrix_creation, end = time_E_matrix_creation), unit = "seconds") 
+
+time_CA <- time_length(interval(start = time_B_CA, end = time_E_CA), unit = "seconds") 
+
+time_HCPC <- time_length(interval(start = time_B_HCPC, end = time_E_HCPC), unit = "seconds") 
 
 require(grDevices)
 
