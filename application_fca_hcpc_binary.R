@@ -19,7 +19,7 @@ library(FactoMineR)
 # <time>
 time_B_obj_preparing <- Sys.time()
 
-col <- list() # list of all links possibles
+col <- list()
 #row <- c()
 col_to_string <- c()
 row_to_string <- c()
@@ -38,15 +38,18 @@ for (j in 1:length(list_of_subjects)){
     
     # adding the link in the list if not already added
     if(!contains(col, link)){
+      col1 <- number_of_columns + 1
+      col2 <- number_of_columns + 2
       
       # adding the link in the list (no need to add it twice):
-      col[number_of_columns +1] <- link
+      col[number_of_columns/2 +1] <- link
       
       # building column name :
-      col_to_string[number_of_columns + 1] <- paste("||" , link@property@name ,"||", link@object@name)
+      col_to_string[col1] <- paste("||" , link@property@name)
+      col_to_string[col2] <- paste("||" , link@property@name ,"||", link@object@name)
       
       # increment :
-      number_of_columns <- number_of_columns + 1
+      number_of_columns <- number_of_columns + 2
     }
   }
 }
@@ -81,16 +84,17 @@ time_B_matrix_creation <- Sys.time()
 # ********************************************************
 # CREATING THE EMPTY MATRIX
 # ********************************************************
-data <- matrix(NA, length(list_of_subjects), length(col))
-#colnames(data) <- col_to_string
+data <- matrix(NA, length(list_of_subjects), number_of_columns)
+colnames(data) <- col_to_string
 rownames(data) <-  row_to_string
 
 
 
 
 # ********************************************************
-# PREPARING MATRIX FOR DBSCAN
+# BUILDING THE BINARY MATRIX
 # ********************************************************
+
 for (j in 1:length(list_of_subjects)){
   # selecting the current subject :
   subject <- list_of_subjects[[j]] 
@@ -101,11 +105,14 @@ for (j in 1:length(list_of_subjects)){
     
     col_num <- i*2-1
     if(containsPropertyAndObject(subject@links, link)){
-      data[j,i] <- 2
+      data[j,col_num] <- 1
+      data[j,col_num+1] <- 1
     } else if(containsProperty(subject@links, link)){
-      data[j,i] <- 1
+      data[j,col_num] <- 1
+      data[j,col_num+1] <- 0
     } else {
-      data[j,i] <- 0
+      data[j,col_num] <- 0
+      data[j,col_num+1] <- 0
     }
   }
 }
