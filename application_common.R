@@ -48,7 +48,7 @@ query <- "select distinct ?g
 where {
 ?g rdfs:label ?y
 FILTER(regex(?y, 'Jaguar', 'i'))
-} LIMIT 500"
+} LIMIT 1"
 
 
 # ********************************************************
@@ -89,6 +89,38 @@ time_E_result_obj_creation <- Sys.time()
 # ********************************************************
 RequestNeighborhood<-function(QueryResult, endpoint){
   
+  ignored_links <- c("abstract", "comment")
+  useful_links <- c()#c("sameAs")
+  filter <- ""
+  if(length(useful_links) > 0){
+    # we create a filter that only selects the useful links
+    filter <- paste(filter, " ( ")
+    
+    for (i in 1:length(useful_links)){
+      
+      if(i > 1){
+        filter <- paste(filter, " || ")
+      }
+      filter <- paste(filter, "regex (?b,'" , useful_links[i] , "', 'i')", sep = "")
+    }
+    
+    filter <- paste(filter, " ) ")
+  } else {
+    # if the useful_links list is empty then we use the ignored_links list 
+    filter <- paste(filter, " !( ")
+    
+    for (i in 1:length(ignored_links)){
+      
+      if(i > 1){
+        filter <- paste(filter, " || ")
+      }
+      filter <- paste(filter, "regex (?b,'" , ignored_links[i] , "', 'i')", sep = "")
+    }
+    
+    filter <- paste(filter, " ) ")
+  }
+  print(filter)
+  
   if (grepl("%", QueryResult) ){
     
   }
@@ -97,12 +129,12 @@ RequestNeighborhood<-function(QueryResult, endpoint){
                             WHERE{
                             {",
                             QueryResult, "?b ?c.
-                            FILTER ( !( regex (?b, 'abstract', 'i') || regex ( ?b, 'comment', 'i')))
+                            FILTER (", filter,")
                             FILTER isIRI (?c)
                             } UNION
                             {",
                             QueryResult , " ?b ?c.
-                            FILTER ( !( regex (?b , 'abstract', 'i') || regex ( ?b, 'comment', 'i') ))
+                            FILTER (", filter,")
                             FILTER isLiteral(?c)
                             FILTER ( lang(?c) = 'en')
                             }
