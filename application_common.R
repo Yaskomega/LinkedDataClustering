@@ -29,15 +29,6 @@ endpoint <- "http://dbpedia.org/sparql"
 # SPARQL QUERY
 # ********************************************************
 
-query <- "PREFIX db: <http://dbpedia.org/resource/>
-PREFIX dbo: <http://dbpedia.org/ontology/>
-SELECT DISTINCT ?oeuvre
-WHERE {
-?oeuvre dbo:author ?j.
-#?oeuvre rdfs:label ?titre.
-?oeuvre rdf:type  dbo:Book.
-} LIMIT 10"
-
 query <- "select distinct ?g
 where {
 ?g rdfs:label ?y
@@ -48,8 +39,35 @@ query <- "select distinct ?g
 where {
 ?g rdfs:label ?y
 FILTER(regex(?y, 'Jaguar', 'i'))
-} LIMIT 1"
+} LIMIT 10"
 
+query <- "PREFIX db: <http://dbpedia.org/resource/>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+SELECT DISTINCT ?oeuvre
+WHERE {
+?oeuvre dbo:author ?j.
+#?oeuvre rdfs:label ?titre.
+?oeuvre rdf:type  dbo:Book.
+} LIMIT 10"
+
+
+query <- "PREFIX db: <http://dbpedia.org/resource/>
+PREFIX mo: <http://purl.org/ontology/mo/>
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+SELECT ?name ?img ?hp ?loc
+WHERE {
+?a a db:MusicArtist ;
+foaf:name ?name ;
+foaf:img ?img ;
+foaf:homepage ?hp ;
+foaf:based_near ?loc .
+} LIMIT 10"
+
+query <- "select distinct ?g
+where {
+?g rdfs:label ?y
+FILTER(regex(?y, 'De Gaulle', 'i'))
+} LIMIT 50 OFFSET 0"
 
 # ********************************************************
 # EXECUTING THE QUERY AND SELECTING THE RESULT
@@ -65,7 +83,7 @@ time_E_query_exec <- Sys.time()
 
 dataFrameResult <- QueryResult$results    # Enregistrer les résultats de la requête dans un data frame
 
-
+dataFrameResult
 
 
 # ********************************************************
@@ -119,7 +137,6 @@ RequestNeighborhood<-function(QueryResult, endpoint){
     
     filter <- paste(filter, " ) ")
   }
-  print(filter)
   
   if (grepl("%", QueryResult) ){
     
