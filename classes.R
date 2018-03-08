@@ -1,3 +1,28 @@
+Result <- setClass(
+  # Set the name for the class
+  "Result",
+  
+  # Define the slots
+  slots = c(
+    objects = "list"
+  ),
+  
+  # Set the default values for the slots. (optional)
+  prototype=list(
+    links = list()
+  ),
+  
+  # Make a function that can test to see if the data is consistent.
+  # This is not called if you have an initialize function defined!
+  validity=function(object)
+  {
+    if(FALSE) {
+      return("The parameters are not correct.")
+    }
+    return(TRUE)
+  }
+)
+
 Object <- setClass(
   # Set the name for the class
   "Object",

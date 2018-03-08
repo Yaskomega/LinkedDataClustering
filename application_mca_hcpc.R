@@ -19,40 +19,77 @@ library(FactoMineR)
 # <time>
 time_B_obj_preparing <- Sys.time()
 
-col <- list()
-#row <- c()
-col_to_string <- c()
+
+#
+# Building row names :
+#
 row_to_string <- c()
-number_of_columns <- 0
-for (j in 1:length(list_of_subjects)){
-  # selecting the current subject :
-  subject <- list_of_subjects[[j]] 
-  
-  # adding the new row name :
-  row_to_string[j] <- subject@name
-  
-  for (i in 1:length(subject@links)){
-    #for (i in 1:4){
-    # selecting the current link :
-    link <- subject@links[[i]]
+for(i in 1:length(list_of_results)){
+  row_to_string[i] <- paste("Result ", i)
+}
+
+# List of columns, contains vectors (one for each variable ?x ?y ?z ...), each vector contains links :
+list_of_columns <- list()
+
+# List of column names, contains vectors (one for each variable ?x ?y ?z ...), each vector contains links :
+list_of_column_names <- list()
+
+for(i in 1:length(list_of_results[[1]]@objects)){
+  list_of_columns[i] <- NA
+  list_of_column_names[i] <- NA
+}
+
+# For each result :
+for(i in 1:length(list_of_results)){
+
+  # For each object in the result :
+  for (j in 1:length(list_of_results[[i]]@objects)){
+
+    # selecting the current object :
+    object <- list_of_results[[i]]@objects[[j]]
     
-    # adding the link in the list if not already added
-    if(!contains(col, link)){
-      col1 <- number_of_columns + 1
-      col2 <- number_of_columns + 2
+    # If the current object has links :
+    if(length(object@links) > 0){
       
-      # adding the link in the list (no need to add it twice):
-      col[number_of_columns/2 +1] <- link
-      
-      # building column name :
-      col_to_string[col1] <- paste("||" , link@property@name)
-      col_to_string[col2] <- paste("||" , link@property@name ,"||", link@object@name)
-      
-      # increment :
-      number_of_columns <- number_of_columns + 2
+      # For each link of the current object :
+      for (k in 1:length(object@links)){
+
+        # selecting the current link :
+        link <- object@links[[k]]
+
+        # adding the link in the list if not already added
+        if(is.na(list_of_columns[[j]]) || !contains(list_of_columns[j] , link)){
+          print("NEW LINK TO ADD")
+          # adding the link in the list (no need to add it twice):
+          # If the concerned list of columns doesn't exist :
+          if(is.na(list_of_columns[[j]])){
+            print("INITIALIZE LIST OF COLUMNS")
+            list_of_columns[j] <- list(link)
+          }else{
+            #new_index <- length(list_of_columns[j]) + 1
+            #list_of_columns[[j]][new_index] <- link 
+            list_of_columns <- addLinkToList(list_of_columns, link, j)
+            print("ADDING NEW COLUMN LIST OF COLUMNS")
+            #list_of_columns[j] <- c(list_of_columns[j] , c(link))
+          }
+
+          # adding the name in the list :
+          # If the concerned list of name doesn't exist :
+          if(is.na(list_of_column_names[[j]])){
+            list_of_column_names[j] <- c(paste(j, "||" , link@property@name))
+            list_of_column_names[[j]][2] <- paste(j, "||" , link@property@name ,"||", link@object@name)
+          }else{
+            index1 <- length(list_of_column_names[j]) + 1
+            index2 <- length(list_of_column_names[j]) + 2
+            list_of_column_names[[j]][index1] <- paste(j, "||" , link@property@name)
+            list_of_column_names[[j]][index2] <- paste(j, "||" , link@property@name ,"||", link@object@name)
+          }  
+        }
+      }  
     }
   }
 }
+#!contains(list_of_columns[[j]], link)
 
 # <time>
 time_E_obj_preparing <- Sys.time()
