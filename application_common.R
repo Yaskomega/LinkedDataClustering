@@ -78,7 +78,7 @@ WHERE {
 ?oeuvre dbo:numberOfPages ?pages.
 ?oeuvre rdfs:label ?titre.
 ?oeuvre rdf:type  dbo:Book.
-} LIMIT 10"
+} LIMIT 5 OFFSET 2"
 
 # ********************************************************
 # EXECUTING THE QUERY AND SELECTING THE RESULT
@@ -104,17 +104,17 @@ dataFrameResult
 time_B_result_obj_creation <- Sys.time()
 
 #We create a list of result :
-list_of_results = list()
+list_of_results <- list()
 
 #For each result in dataFrameResult :
 for (i in 1:length(dataFrameResult[,1])){
 
   # We create a list of objets :
-  list_of_objects = list()
+  list_of_objects <- list()
 
   # For each objects in the result :
   for(j in 1:length(dataFrameResult[i,])){
-    list_of_objects[j] <- Object(name=as.character(dataFrameResult[1,j]), links = list())
+    list_of_objects[j] <- Object(name=as.character(dataFrameResult[i,j]), links = list())
   }
   
   # We affect the created list of objects to the current result that we create :
@@ -195,12 +195,6 @@ RequestNeighborhood<-function(QueryResult, endpoint){
 
 
 
-isLiteral <-function(str){
-  if(length(grep("^<.*>$", c(str), value = FALSE)) > 0){
-    return(FALSE)
-  }
-  return(TRUE)
-}
 
 # ********************************************************
 # CREATING LINKS OBJECTS FROM NEIGHBORHOOD

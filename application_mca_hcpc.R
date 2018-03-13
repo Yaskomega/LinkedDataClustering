@@ -66,11 +66,8 @@ for(i in 1:length(list_of_results)){
             print("INITIALIZE LIST OF COLUMNS")
             list_of_columns[j] <- list(link)
           }else{
-            #new_index <- length(list_of_columns[j]) + 1
-            #list_of_columns[[j]][new_index] <- link 
-            list_of_columns <- addLinkToList(list_of_columns, link, j)
+            list_of_columns <- addItemToListInMatrix(list_of_columns, link, j)
             print("ADDING NEW COLUMN LIST OF COLUMNS")
-            #list_of_columns[j] <- c(list_of_columns[j] , c(link))
           }
 
           # adding the name in the list :
@@ -79,17 +76,15 @@ for(i in 1:length(list_of_results)){
             list_of_column_names[j] <- c(paste(j, "||" , link@property@name))
             list_of_column_names[[j]][2] <- paste(j, "||" , link@property@name ,"||", link@object@name)
           }else{
-            index1 <- length(list_of_column_names[j]) + 1
-            index2 <- length(list_of_column_names[j]) + 2
-            list_of_column_names[[j]][index1] <- paste(j, "||" , link@property@name)
-            list_of_column_names[[j]][index2] <- paste(j, "||" , link@property@name ,"||", link@object@name)
+            list_of_column_names <- addItemToListInMatrix(list_of_column_names, paste(j, "||" , link@property@name), j)
+            list_of_column_names <- addItemToListInMatrix(list_of_column_names, paste(j, "||" , link@property@name ,"||", link@object@name), j)
           }  
         }
       }  
     }
   }
 }
-#!contains(list_of_columns[[j]], link)
+
 
 # <time>
 time_E_obj_preparing <- Sys.time()
@@ -120,10 +115,19 @@ time_B_matrix_creation <- Sys.time()
 # ********************************************************
 # CREATING THE EMPTY MATRIX
 # ********************************************************
-data <- matrix(NA, length(list_of_subjects), number_of_columns)
+
+# Merging all the columns names into one vector :
+col_to_string <- c()
+for(i in 1:length(list_of_column_names)){
+  if(!is.na(list_of_column_names[[i]])){
+    col_to_string <- c(col_to_string, as.vector(list_of_column_names[[i]])) 
+  }
+}
+
+# Creating the empty matrix :
+data <- matrix(NA, length(list_of_results), length(col_to_string))
 colnames(data) <- col_to_string
 rownames(data) <-  row_to_string
-
 
 
 
@@ -132,27 +136,29 @@ rownames(data) <-  row_to_string
 # PREPARING MATRIX FOR MCA & HCPC
 # ********************************************************
 # Fillin the matrix : 
-
-for (j in 1:length(list_of_subjects)){
-  # selecting the current subject :
-  subject <- list_of_subjects[[j]] 
-  
-  for (i in 1:length(col)){
-    # select the current link :
-    link <- col[[i]]
-    
-    col_num <- i*2-1
-    if(containsPropertyAndObject(subject@links, link)){
-      data[j,col_num] <- col_to_string[col_num]
-      data[j,col_num+1] <- col_to_string[col_num+1]
-    } else if(containsProperty(subject@links, link)){
-      data[j,col_num] <- col_to_string[col_num]
-    }
+column_name_index <- 0
+for(k in 1:length(list_of_results[[1]])){
+  if(!is.na(list_of_columns[[k]])){
+    for (j in 1:length(list_of_results)){
+      # selecting the current object :
+      object <- list_of_results[[j]]@objects[[k]]
+      
+      for (i in 1:length(list_of_columns[[k]])){
+        # select the current link :
+        link <- list_of_columns[[k]][[i]]
+        
+        col_num <- i*2-1
+        if(containsPropertyAndObject(object@links, link)){
+          data[j,col_num + column_name_index] <- list_of_column_names[[k]][col_num]
+          data[j,col_num+1 + column_name_index] <- list_of_column_names[[k]][col_num+1]
+        } else if(containsProperty(object@links, link)){
+          data[j,col_num + column_name_index] <- list_of_column_names[[k]][col_num]
+        }
+      }
+    }  
   }
+  column_name_index <- column_name_index + length(list_of_column_names[[k]])
 }
-
-
-
 
 
 # <time>
@@ -191,8 +197,8 @@ time_E_HCPC <- Sys.time()
 
 # pour faire des affichages ACM nous pouvons utiliser la bibliothèque explor
 # install.packages("explor")
-#library(explor)
-#explor(res.mca)
+library(explor)
+explor(res.mca)
 # Clear console cat("\014")
 
 

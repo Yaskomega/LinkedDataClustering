@@ -103,3 +103,29 @@ containsProperty <- function (list_of_link , link){
   return(FALSE)
 }
 
+# listMatrix is a list containing list, in other words : a matrix
+addItemToListInMatrix <-function(listMatrix, item, index){
+  newMatrix <- list()
+  #For each list in the matrix :
+  for(i in 1:length(listMatrix)){
+    # If the current list is the wanted list :
+    if(i == index){
+      # We add the item :
+      
+      list_tmp <- listMatrix[[i]]
+      list_tmp <- append(list_tmp, item)
+      newMatrix <- append(newMatrix, list(list_tmp))
+    }else{
+      newMatrix <- append(newMatrix, listMatrix[i])
+    }
+  }
+  
+  return(newMatrix)
+}
+
+isLiteral <-function(str){
+  if(length(grep("^<.*>$", c(str), value = FALSE)) > 0){
+    return(FALSE)
+  }
+  return(TRUE)
+}
