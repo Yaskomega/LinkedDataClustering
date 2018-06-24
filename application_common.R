@@ -3,7 +3,7 @@
 # ********************************************************
 
 setwd("D:/Dropbox/Yassin/ESILV/A4/RESEARCH/R/LinkedDataClustering") # To use relative paths, and set the working directory appropriately, use setwd() to point R/RStudio at the directory that contains these files.
-#source("functions.R")
+source("functions.R")
 source("classes.R")
 
 # installation de la librairie  SPARQL : install.packages("SPARQL")
@@ -67,7 +67,7 @@ query <- "select distinct ?g
 where {
 ?g rdfs:label ?y
 FILTER(regex(?y, 'De Gaulle', 'i'))
-} LIMIT 50 OFFSET 0"
+} LIMIT 35 OFFSET 15"
 
 # ********************************************************
 # EXECUTING THE QUERY AND SELECTING THE RESULT
@@ -99,72 +99,6 @@ for (i in 1:length(dataFrameResult)){
 
 # <time>
 time_E_result_obj_creation <- Sys.time()
-
-
-
-# ********************************************************
-# Fonction permettant de récupérer le voisinage d'un objet
-# ********************************************************
-RequestNeighborhood<-function(QueryResult, endpoint){
-  
-  ignored_links <- c("abstract", "comment")
-  useful_links <- c()#c("sameAs")
-  filter <- ""
-  if(length(useful_links) > 0){
-    # we create a filter that only selects the useful links
-    filter <- paste(filter, " ( ")
-    
-    for (i in 1:length(useful_links)){
-      
-      if(i > 1){
-        filter <- paste(filter, " || ")
-      }
-      filter <- paste(filter, "regex (?b,'" , useful_links[i] , "', 'i')", sep = "")
-    }
-    
-    filter <- paste(filter, " ) ")
-  } else {
-    # if the useful_links list is empty then we use the ignored_links list 
-    filter <- paste(filter, " !( ")
-    
-    for (i in 1:length(ignored_links)){
-      
-      if(i > 1){
-        filter <- paste(filter, " || ")
-      }
-      filter <- paste(filter, "regex (?b,'" , ignored_links[i] , "', 'i')", sep = "")
-    }
-    
-    filter <- paste(filter, " ) ")
-  }
-  
-  if (grepl("%", QueryResult) ){
-    
-  }
-  else{
-    queryvoisinage <- paste("SELECT DISTINCT ?b ?c
-                            WHERE{
-                            {",
-                            QueryResult, "?b ?c.
-                            FILTER (", filter,")
-                            FILTER isIRI (?c)
-                            } UNION
-                            {",
-                            QueryResult , " ?b ?c.
-                            FILTER (", filter,")
-                            FILTER isLiteral(?c)
-                            FILTER ( lang(?c) = 'en')
-                            }
-                            }")
-
-    QueryResultFrame <- SPARQL(endpoint, queryvoisinage)  # pour chaque rÃ©sultat de la requete initiale
-    
-    results <- QueryResultFrame$results # ici nous aurons que les rÃ©sultats de SELECT
-  }
-  return (results)
-}
-#obj <- list_of_subjects[[1]] 
-#results <- RequestNeighborhood(obj@name, endpoint)
 
 
 
