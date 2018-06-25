@@ -1,6 +1,11 @@
 # Load package
 library(networkD3)
 
+
+# ########################################################################
+# Fonction qui permet d'afficher un objet de type Object et son voisinage
+# @param obj : l'objet de type Object à afficher
+# ########################################################################
 displayObjectNetwork <-function(obj){
   source <- c()
   target <- c()
@@ -67,4 +72,5 @@ displayObjectNetwork <-function(obj){
   
 }
 
+# Example : 
 #displayObjectNetwork(list_of_subjects[[2]]) 

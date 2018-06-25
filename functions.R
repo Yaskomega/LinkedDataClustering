@@ -1,6 +1,9 @@
-# ********************************************************
+# ########################################################################
 # Fonction permettant de récupérer le voisinage d'un objet
-# ********************************************************
+# @param QueryResult : chaine de caractère correspondant à la valeur de l'attribut name de l'objet
+# @param endpoint : SPARQL endpoint
+# @return dataframe des résultats correspondant au voisinage
+# ########################################################################
 RequestNeighborhood<-function(QueryResult, endpoint){
   
   ignored_links <- c("abstract", "comment")
@@ -60,6 +63,12 @@ RequestNeighborhood<-function(QueryResult, endpoint){
   return (results)
 }
 
+# ########################################################################
+# Fonction permettant de générer une matrice de distance inter-cluster
+# @param list_of_subjects : liste des objets 
+# @param list_of_clusters : liste des clusters
+# @return matrice de distance
+# ########################################################################
 distBetweenClusters <- function(list_of_subjects, list_of_clusters){
   list_of_common <- list()
   
@@ -78,6 +87,11 @@ distBetweenClusters <- function(list_of_subjects, list_of_clusters){
   return(dist_matrix)
 }
 
+# ########################################################################
+# Fonction permettant de générer une matrice de distance entre des objet de type Object
+# @param list_of_objects : liste des objets 
+# @return matrice de distance
+# ########################################################################
 generateDistMatrix <- function(list_of_objects){
   # ********************************************************
   # BUILDING THE LIST OF LINK AND THE COLUMNS NAMES AND ROWS NAMES
@@ -170,6 +184,12 @@ generateDistMatrix <- function(list_of_objects){
   return(dist_matrix)
 }
 
+# ########################################################################
+# Fonction permettant de générer une matrice de distance intra-cluster
+# @param list_of_subjects : liste de tous les objets résultats (liste de type Object)
+# @param cluster : le cluster dont l'on génére la matrice de distance
+# @return matrice de distance
+# ########################################################################
 distInCluster <- function(list_of_subjects, cluster){
   list_of_objects <- list()
   for(i in 1:length(cluster)){
@@ -180,7 +200,13 @@ distInCluster <- function(list_of_subjects, cluster){
   return(dist_matrix)
 }
 
+
 library("lattice")
+
+# ########################################################################
+# Fonction permettant d'afficher une matrice de distance
+# @param dist_cluster_matrix : la matrice de distance
+# ########################################################################
 displayDistMatrix <- function(dist_cluster_matrix){
   dist_cluster_matrix <- as.data.frame(as.matrix(dist_cluster_matrix))
   levelplot(t(dist_cluster_matrix[c(nrow(dist_cluster_matrix):1) , ]), scales=list(x=list(rot=45)), aspect = "iso")

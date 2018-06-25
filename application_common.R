@@ -2,9 +2,12 @@
 # SOURCE CODE
 # ********************************************************
 
-setwd("D:/Dropbox/Yassin/ESILV/A4/RESEARCH/R/LinkedDataClustering") # To use relative paths, and set the working directory appropriately, use setwd() to point R/RStudio at the directory that contains these files.
-source("functions.R")
+setwd("C:/path/to/directory/LinkedDataClustering") # To use relative paths, and set the working directory appropriately, use setwd() to point R/RStudio at the directory that contains these files.
+source("common.R")
 source("classes.R")
+source("functions.R")
+source("network_displayer.R")
+
 
 # installation de la librairie  SPARQL : install.packages("SPARQL")
 library(SPARQL)
