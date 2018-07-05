@@ -1,5 +1,11 @@
 # LinkedDataClustering
-Research about clustering linked data ressources from a SPARQL request
+Research about clustering linked data ressources from a SPARQL request.
+Research university career - Master at ESILV, Graduate School of Engineering.
+Thomas Raimbault (ESILV - DaVinci Research Center), Yassin HASSAN
+
+Djebali, S. and Raimbault, T. (2015). SimplePARQL : A New Approach Using Keywords over SPARQL to Query the Web of Data. In Proceedings of the 11th International Conference on Semantic Systems, SEMANTICS '15, pages 188-191, New York, NY, USA. ACM
+
+Located at De Vinci Research Center, Pôle Universitaire Léonard de Vinci, Paris, FRANCE
 
 ## Exécuter une méthode de classification
 Pour exécuter une méthode de classification, lancez le script application_common.R. Puis lancez le script correspondant à la méthode de votre choix :
